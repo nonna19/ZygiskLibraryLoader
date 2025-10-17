@@ -1,26 +1,42 @@
-name: Android CI
+name: Build APK
 
 on:
   push:
-    branches: [ "master" ]
+    branches: [ main ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ main ]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: set up JDK 11
+    - name: Checkout Code
+      uses: actions/checkout@v4
+
+    - name: Setup Java
       uses: actions/setup-java@v4
       with:
-        java-version: '11'
+        java-version: '17'
         distribution: 'temurin'
-        cache: gradle
 
-    - name: Grant execute permission for gradlew
-      run: chmod +x gradlew
-    - name: Build with Gradle
-      run: ./gradlew build
+    - name: Setup Android SDK
+      uses: android-actions/setup-android-sdk@v2
+      with:
+        packages: |
+          platforms;android-34
+          build-tools;34.0.0
+        sdkmanager-mode: true
+
+    - name: Grant Execute Permission for Gradlew
+      run: chmod +x ./gradlew
+
+    - name: Build APK
+      run: ./gradlew assembleDebug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v4
+      with:
+        name: MyApp-APK
+        path: app/build/outputs/apk/debug/app-debug.apk
+        retention-days: 7
