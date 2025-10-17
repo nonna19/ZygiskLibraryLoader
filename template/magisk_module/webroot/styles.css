@@ -1,0 +1,238 @@
+@import url('https://mui.kernelsu.org/internal/insets.css');
+@import url('https://mui.kernelsu.org/internal/colors.css');
+
+:root {
+    --top-inset: var(--window-inset-top, 0px);
+    --bottom-inset: var(--window-inset-bottom, 0px);
+
+    --bg-primary: var(--background, #fbf8ff);
+    --bg-secondary: var(--tonalSurface, #f3f0f9);
+    --bg-input: var(--surfaceBright, #ffffff);
+
+    --text-primary: var(--onSurface, #1b1b21);
+    --text-muted: #757575;
+
+    --border-color: var(--outlineVariant, #c7c5d0);
+    --btn-primary: var(--primary, #565992);
+    --btn-primary-text: var(--onPrimary, #fff);
+
+    --input-height: 42px;
+    --radius: 12px;
+    --shadow: 0 4px 15px rgba(0,0,0,0.12);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bg-primary: #131318;
+        --bg-secondary: #1c1c24;
+        --bg-input: #2c2c30;
+
+        --text-primary: #e4e1e9;
+        --text-muted: #C2C2C2;
+
+        --border-color: #46464f;
+        --btn-primary: #bfc2ff;
+        --btn-primary-text: #272b60;
+    }
+}
+
+/* ------------------ General ------------------ */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: "Segoe UI", Roboto, sans-serif;
+    color: var(--text-primary);
+    background-color: var(--bg-primary);
+    padding-top: var(--top-inset);
+    padding-bottom: var(--bottom-inset);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    min-height: calc(100vh - var(--top-inset) - var(--bottom-inset));
+}
+
+/* ------------------ Header ------------------ */
+.header h3 {
+    margin-bottom: 20px;
+    font-size: 1.6rem;
+    text-align: center;
+}
+
+/* ------------------ Dropdown ------------------ */
+select {
+    width: 100%;
+    height: var(--input-height);
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    padding: 0 12px;
+    font-size: 15px;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+    cursor: pointer;
+}
+
+select:focus {
+    border-color: var(--btn-primary);
+    box-shadow: 0 0 6px rgba(86, 89, 146, 0.35);
+}
+
+/* ------------------ Inputs ------------------ */
+.toggle-list input[type="text"] {
+    width: 100%;
+    height: var(--input-height);
+    padding: 0 12px;
+    border-radius: var(--radius);
+    border: 1px solid var(--border-color);
+    background-color: var(--bg-input);
+    color: var(--text-primary);
+    font-size: 15px;
+    outline: none;
+    transition: border 0.2s ease, box-shadow 0.2s ease;
+}
+
+.toggle-list input[type="text"]:focus {
+    border-color: var(--btn-primary);
+    box-shadow: 0 0 6px rgba(86, 89, 146, 0.35);
+}
+
+/* ------------------ Buttons ------------------ */
+button {
+    height: var(--input-height);
+    border: none;
+    border-radius: var(--radius);
+    padding: 0 16px;
+    background-color: var(--btn-primary);
+    color: var(--btn-primary-text);
+    font-size: 15px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+button:hover {
+    filter: brightness(1.1);
+}
+
+button:active {
+    transform: scale(0.97);
+}
+
+/* ------------------ Checkboxes ------------------ */
+.toggle {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 16px;
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 6px;
+    border: 2px solid var(--border-color);
+    background-color: var(--bg-input);
+    cursor: pointer;
+    position: relative;
+    transition: all 0.2s ease;
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--btn-primary);
+    border-color: var(--btn-primary);
+}
+
+input[type="checkbox"]:checked::after {
+    content: "✔";
+    color: var(--btn-primary-text);
+    position: absolute;
+    top: 1px;
+    left: 4px;
+    font-size: 14px;
+}
+
+/* ------------------ Toggle container ------------------ */
+.toggle-list {
+    width: 100%;
+    max-width: 600px;
+    background-color: var(--bg-secondary);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+/* ------------------ Terminal ------------------ */
+.output-terminal {
+    width: 100%;
+    max-width: 700px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    border-radius: var(--radius);
+    overflow: hidden;
+    background-color: var(--bg-input);
+    box-shadow: var(--shadow);
+}
+
+.output-terminal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 15px;
+    font-size: 14px;
+    background-color: var(--bg-secondary);
+    color: var(--text-muted);
+}
+
+.output-terminal-content {
+    font-family: monospace;
+    font-size: 14px;
+    padding: 10px;
+    height: 100%;
+    overflow-y: auto;
+    background-color: var(--bg-input);
+}
+
+/* ------------------ Responsive ------------------ */
+@media (max-width: 600px) {
+    .toggle-list {
+        padding: 15px;
+    }
+
+    button, input[type="text"], select {
+        font-size: 14px;
+    }
+
+    .header h3 {
+        font-size: 1.4rem;
+    }
+}
+.credits {
+    position: fixed;
+    bottom: 10px;
+    right: 15px;
+    font-size: 13px;
+    color: #777;
+    opacity: 0.8;
+    user-select: none;
+    transition: opacity 0.2s ease-in-out;
+}
+.credits:hover {
+    opacity: 1;
+    color: #555;
+}

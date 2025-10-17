@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>NepMods Config</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="content">
+        <div class="header">
+            <h3>NepMods Config Manager</h3>
+        </div>
+
+        <!-- Package Selector -->
+        <div class="toggle-list">
+            <div class="toggle ripple-element">
+                <label class="toggle-text" for="package-select">Select Package:</label>
+                <select id="package-select"></select>
+            </div>
+            <div class="toggle ripple-element">
+                <button id="add-package" class="ripple-element">+ Add Package</button>
+            </div>
+
+            <!-- Add package input (hidden initially) -->
+            <div id="new-package-container" style="display:none;" class="toggle ripple-element">
+                <input type="text" id="new-package-input" placeholder="New package name">
+                <button id="confirm-add-package" class="ripple-element">Add</button>
+            </div>
+        </div>
+
+        <!-- Lib Config -->
+        <div class="toggle-list">
+            <div class="toggle ripple-element">
+    <input type="checkbox" id="enable-load-lib">
+    <span class="toggle-text">Enable Load Lib</span>
+</div>
+            <div class="toggle ripple-element">
+                <input type="checkbox" id="default-lib">
+                <span class="toggle-text">Use default library path</span>
+            </div>
+            <div class="toggle ripple-element">
+                <label class="toggle-text" for="lib-path">Custom Library Path:</label>
+                <input type="text" id="lib-path" placeholder="/path/to/lib.so">
+            </div>
+        </div>
+
+        <!-- Buttons -->
+        <div class="toggle-list" style="flex-direction: row; justify-content: space-between;">
+            <button id="reload-config" class="ripple-element">Reload Config</button>
+            <button id="remove-config" class="ripple-element">Remove Config</button>
+            <button id="save-config" class="ripple-element">Save Config</button>
+        </div>
+
+
+        <!-- Output Terminal -->
+        <div class="output-terminal">
+            <div class="output-terminal-header">
+                <span>Terminal Output</span>
+                <div class="clear-terminal ripple-element">Clear</div>
+            </div>
+            <div class="output-terminal-content"></div>
+        </div>
+        <div class="toggle-list" style="flex-direction: row; justify-content: space-between;">
+            <button id="backup-config" class="ripple-element">Backup All Config</button>
+            <button id="restore-config" class="ripple-element">Restore All Config</button>
+        </div>
+    </div>
+
+    <footer class="credits">
+        <span>Developed with ❤️ by <b>Arjun (nepmods)</b></span>
+    </footer>
+
+    <script type="module" src="main.js"></script>
+</body>
+</html>

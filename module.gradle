@@ -1,0 +1,9 @@
+ext {
+    moduleLibraryName = "loader"
+    magiskModuleId = "nepmodslibloader"
+    moduleName = "NepMods LibLoader"
+    moduleAuthor = "arjun"
+    moduleDescription = "Tool to load libs"
+    moduleVersion = "v1.0.0"
+    moduleVersionCode = 1
+}
