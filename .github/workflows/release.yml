@@ -41,19 +41,16 @@ jobs:
       - name: Determine tag name
         id: tag
         run: |
-          # if tag provided via workflow_dispatch input, use it
-          if [ -n "${{ github.event.inputs.tag || '' }}" ]; then
-            TAG="${{ github.event.inputs.tag }}"
-          # if this run is a tag push, use the tag name
+          TAG_INPUT="${{ github.event.inputs.tag }}"
+          if [ -n "$TAG_INPUT" ]; then
+            TAG="$TAG_INPUT"
           elif [[ "${GITHUB_REF}" =~ refs/tags/(.*) ]]; then
             TAG="${BASH_REMATCH[1]}"
-          # if run on main branch, generate a date-based tag
           elif [ "${GITHUB_REF}" = "refs/heads/main" ]; then
             TAG="v$(date -u +'%Y.%m.%d')-r${GITHUB_RUN_NUMBER}"
           else
             TAG="v$(date -u +'%Y.%m.%d')-r${GITHUB_RUN_NUMBER}"
           fi
-          echo "Computed tag: $TAG"
           echo "TAG_NAME=$TAG" >> $GITHUB_OUTPUT
 
       - name: Build (Gradle)
@@ -65,16 +62,27 @@ jobs:
         id: artifacts
         run: |
           set -e
-          # List out directory if present
           ls -la out || true
-          # Find zip files in out/ (adjust path if your project writes zips elsewhere)
-          FILES=$(find out -maxdepth 1 -type f -name '*.zip' -print | tr '\n' ' ')
-          if [ -z "$FILES" ]; then
+          mapfile -d '' files < <(find out -maxdepth 1 -type f -name '*.zip' -print0)
+          if [ ${#files[@]} -eq 0 ]; then
             echo "files_found=false" >> $GITHUB_OUTPUT
             echo "files_list=" >> $GITHUB_OUTPUT
           else
+            # convert absolute paths to paths relative to workspace if necessary
+            REL_PATHS=()
+            for f in "${files[@]}"; do
+              # trim possible trailing NUL
+              f="${f%$'\0'}"
+              if [[ "$f" == "${GITHUB_WORKSPACE}/"* ]]; then
+                REL="${f#${GITHUB_WORKSPACE}/}"
+                REL_PATHS+=("$REL")
+              else
+                REL_PATHS+=("$f")
+              fi
+            done
+            FILES=$(printf "%s," "${REL_PATHS[@]}")
+            FILES=${FILES%,}
             echo "files_found=true" >> $GITHUB_OUTPUT
-            # Export a space-separated list usable by subsequent steps
             echo "files_list=$FILES" >> $GITHUB_OUTPUT
           fi
 
@@ -87,11 +95,12 @@ jobs:
       - name: Create and push git tag
         env:
           TAG_NAME: ${{ steps.tag.outputs.TAG_NAME }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git tag -a "$TAG_NAME" -m "Release $TAG_NAME"
-          git push origin "$TAG_NAME"
+          git push "https://x-access-token:${GITHUB_TOKEN}@github.com/${{ github.repository }}.git" "$TAG_NAME"
 
       - name: Create GitHub release and upload artifacts
         uses: ncipollo/release-action@v1
@@ -99,6 +108,7 @@ jobs:
           tag: ${{ steps.tag.outputs.TAG_NAME }}
           name: ${{ steps.tag.outputs.TAG_NAME }}
           body: "Automated release created by GitHub Actions for ${{ steps.tag.outputs.TAG_NAME }}"
-          files: ${{ steps.artifacts.outputs.files_list }}
+          artifacts: ${{ steps.artifacts.outputs.files_list }}
           draft: false
           prerelease: false
+          token: ${{ secrets.GITHUB_TOKEN }}
